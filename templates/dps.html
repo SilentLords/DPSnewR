@@ -1,0 +1,28 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title> DPS </title>
+	<link rel="stylesheet" href="{% static 'css/dps.head.css' %}">
+</head>
+<body>
+<div class="ch2h3">
+	<h1> <div class="dps">DPS</div><div class="navigator">NAVIGATOR</div> </h1>
+	<h2> </h2>
+</div>
+<h3> На нашем сайте вы можете увидеть метку на карте вашего города с местоположением дпс'ников, либо же оставить её собственноручно </h3>
+<div class="nothing1"> </div>
+
+<div class="levo">
+    <div class="ekb"> <a href="{% url 'ekb' %}"> Екатеринбург </a> </div>
+    <div class="tmn"> <a href="{% url 'tmn' %}"> Тюмень </a> </div>
+</div>
+
+<div class="pravo"> 
+    <div class="surgut"> Сургут </div>
+</div>
+
+<div class="nothing2"> </div>
+<h4> dps.tmn@mail.ru 2019 ................ instagram: dps.tmn</h4>
+</body> 

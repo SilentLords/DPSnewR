@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title> DPS EKB</title>
+    <link rel="stylesheet" href="{% static 'css/ekb.head.css' %}">
+    <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+        var myMap;
+        ymaps.ready(init);
+
+        function placeold(coords) {
+            var placemark = new ymaps.Placemark
+            ([coords[0], coords[1]],
+                {iconContent: 'DPS'},
+                {preset: 'twirl#redIcon'},);
+            myMap.geoObjects.add(placemark);
+            {#alert(coords)#}
+        }
+
+        function place(coords) {
+            var placemark = new ymaps.Placemark
+            ([coords[0], coords[1]],
+                {iconContent: 'DPS'},
+                {preset: 'twirl#redIcon'},);
+            myMap.geoObjects.add(placemark);
+            alert(coords)
+
+            $.ajax({
+                type: 'POST',
+                url: '/ekb/create/',
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },// some data url
+                data: {coordx: coords[0], coordy: coords[1]},  // some params
+                success: function (response) {     // callback
+                    if (response.result === 'OK') {
+                        if (response.data && typeof (response.data) === 'object') {
+                            // do something with the successful response.data
+                            // e.g. response.data can be a JSON object
+                        }
+                    } else {
+                        // handle an unsuccessful response
+                    }
+                }
+            });
+
+        }
+
+        function init() {
+            myMap = new ymaps.Map
+            ('map', {
+                center: [56.8519, 60.6122], //Тюмень
+                zoom: 10
+            });
+            myMap.events.add('click', function (e) {
+                var coords =
+                    e.get('coords');
+                alert(coords.join(', '));
+                place(coords);
+                $.delay(300)
+            });
+            var marks = {{marklist}};
+            if (marks) {
+                for (let i = 0; i < marks.length; i++) {
+                    placeold(marks[i])
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+<div class="ch2h3">
+    <h1>
+        <div class="dps">DPS</div>
+        <div class="navigator">NAVIGATOR</div>
+    </h1>
+    <h2> Здесь вы можете посмотреть, либо оставить местоположение дпс'ников в Екатеринбурге (66, 96, 196) </h2>
+</div>
+<h3> Екатеринбург </h3>
+<div class="nothing1"></div>
+<div class="maps">
+    <div id="map" style="width: 1000px; height: 550px"></div>
+</div>
+<div class="nothing2"></div>
+<h4> dps.tmn@mail.ru 2019 ................ instagram: dps.tmn</h4>
+</body> 
