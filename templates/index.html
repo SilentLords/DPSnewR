@@ -1,0 +1,61 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--  <link rel="manifest" href="site.webmanifest">-->
+    <link rel="apple-touch-icon" href="icon.png">
+    <!-- Place favicon.ico in the root directory -->
+    <link rel="stylesheet" href="{% static "css/main.css" %}">
+    <meta name="theme-color" content="#fafafa">
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=0524ce2f-6067-4ba3-9506-6268f7348498&lang=ru_RU"
+            type="text/javascript"></script>
+
+</head>
+
+<body>
+<div class="all">
+    <div id="map" class="map">
+    </div>
+    <div class="map_cont">
+        <div class="ul_map">
+            <ul class="ul-city">
+                <li class="li-city" id="ekb_B"><a href="#" type="button" id="ekb">Екб</a></li>
+                <li class="li-city link-active" id="msk_B"><a href="#" type="button" id="msk">Мск</a></li>
+                <li class="li-city" id="spb_B"><a href="#" type="button" id="spb">Спб</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="{% static "js/vendor/jquery-3.4.1.min.js" %}"></script>
+
+
+<script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+        crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="{% static 'js/plugins.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+
+<!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+<script>
+    window.ga = function () {
+        ga.q.push(arguments)
+    };
+    ga.q = [];
+    ga.l = +new Date;
+    ga('create', 'UA-XXXXX-Y', 'auto');
+    ga('set', 'transport', 'beacon');
+    ga('send', 'pageview')
+    window.appConfig = {marklist: {{ marklist }}, coords: {{cord_List}}}
+
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+</body>
+
+</html>

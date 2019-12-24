@@ -19,8 +19,8 @@ from . import views
 
 urlpatterns = [
     path('', views.main),
-    path('tmn/', views.tmn, name='tmn'),
-    path('tmn/create/', views.tmn, name='tmn'),
-    path('ekb/', views.ekb, name='ekb'),
-    path('ekb/create/', views.ekb, name='ekb')
+    path('main/create/', views.main, name ="map"),
+    path('main/hate/', views.hate),
+
+
 ]
