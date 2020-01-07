@@ -20,11 +20,11 @@ function getCookie(name) {
     return cookieValue;
 }
 
-var csrftoken = getCookie('csrftoken');
+let csrftoken = getCookie('csrftoken');
+let time = NaN;
 
 function placeold(id_m, coordx, coordy, hate_points, like_points) {
 
-    console.log("X: " + coordx + " Y: " + coordy);
     var placemark = new ymaps.Placemark([coordx, coordy],
         {
             iconContent: 'DPS',
@@ -40,10 +40,8 @@ function placeold(id_m, coordx, coordy, hate_points, like_points) {
 
 
     placemark.events.add('contextmenu', function (e) {
-            var ip;
-            $.getJSON("https://api.ipify.org/?format=json", function (e) {
-                window.ip = e.ip;
-            });
+
+
             // Если меню метки уже отображено, то убираем его.
             if ($('#menu').css('display') == 'block') {
                 $('#menu').remove();
@@ -81,9 +79,110 @@ function placeold(id_m, coordx, coordy, hate_points, like_points) {
                         data: {hate_Id: id_m},  // some params
                         success: function (response) {     // callback
                             if (response.result === 'OK') {
+
                                 if (response.data && typeof (response.data) === 'object') {
-                                    hate_points +=1
-                                    $('#hate').text(hate_points);
+
+                                    // do something with the successful response.data
+                                    // e.g. response.data can be a JSON object
+                                }
+                            } else {
+                                // handle an unsuccessful response
+                            }
+                        }
+                    });
+                    alert('send');
+
+                    window.location.reload();
+                    alert('reload');
+
+                    $('#hate').text(hate_points);
+                })
+                $('#like').button().click(function () {
+                    alert('like');
+                    $('#menu').remove();
+                })
+                $('#del').button().click(function () {
+                    alert('del');
+                    $('#menu').remove();
+                })
+
+            }
+        }
+    );
+    myMap.geoObjects.add(placemark);
+}
+
+function place(coords) {
+
+    if ($.session.get("time") === undefined) {
+        window.time = new Date();
+        $.session.set("time", window.time);
+        var placemark = new ymaps.Placemark([coords[0], coords[1]],
+            {iconContent: 'DPS'},
+            {
+                iconLayout: 'default#image',
+                iconImageHref: 'static/img/metka.svg',
+                iconImageSize: [30, 30],
+                iconImageOffset: [-15, -27],
+            },);
+        $.ajax({
+            type: 'POST',
+            url: '/main/create/',
+            headers: {
+                "X-CSRFToken": csrftoken
+            },// some data url
+            data: {coordx: coords[0], coordy: coords[1]},  // some params
+            success: function (response) {     // callback
+                if (response.result === 'OK') {
+                    if (response.data && typeof (response.data) === 'object') {
+                        // do something with the successful response.data
+                        // e.g. response.data can be a JSON object
+                    }
+                } else {
+                    // handle an unsuccessful response
+                }
+            }
+        });
+        placemark.events.add('contextmenu', function (e) {
+            let ip;
+            $.getJSON("https://api.ipify.org/?format=json", function (e) {
+                window.ip = e.ip;
+            });
+            // Если меню метки уже отображено, то убираем его.
+            if ($('#menu').css('display') == 'block') {
+                $('#menu').remove();
+            } else {
+                // HTML-содержимое контекстного меню.
+                var menuContent =
+                    '<div id="menu">\
+                        <ul id="menu_list">\
+                             <li>Пожаловаться: <button id="hate">!</button> </li>\
+                             <li>Оценить: <button id="like">Like</button></li>\
+                            \<li>Удалить: <button id="del">Del</button></li>\
+                        </ul>\
+                    </div>';
+
+                // Размещаем контекстное меню на странице
+                $('body').append(menuContent);
+
+                // Задаем позицию меню.
+                $('#menu').css({
+                    left: e.get('pagePixels')[0],
+                    top: e.get('pagePixels')[1]
+                });
+                $('#hate').button().click(function () {
+                    alert('hate');
+                    $('#menu').remove();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/main/hate/',
+                        headers: {
+                            "X-CSRFToken": csrftoken
+                        },// some data url
+                        data: {coordx: coords[0], coordy: coords[1]},  // some params
+                        success: function (response) {     // callback
+                            if (response.result === 'OK') {
+                                if (response.data && typeof (response.data) === 'object') {
                                     // do something with the successful response.data
                                     // e.g. response.data can be a JSON object
                                 }
@@ -103,100 +202,106 @@ function placeold(id_m, coordx, coordy, hate_points, like_points) {
                 })
 
             }
-        }
-    );
-    myMap.geoObjects.add(placemark);
-}
-
-function place(coords) {
-    var placemark = new ymaps.Placemark([coords[0], coords[1]],
-        {iconContent: 'DPS'},
-        {
-            iconLayout: 'default#image',
-            // iconImageClipRect: [[0,0], [26, 47]],
-            iconImageHref: 'static/img/metka.svg',
-            iconImageSize: [30, 30],
-            iconImageOffset: [-15, -27],
-        },);
-    $.ajax({
-        type: 'POST',
-        url: '/main/create/',
-        headers: {
-            "X-CSRFToken": csrftoken
-        },// some data url
-        data: {coordx: coords[0], coordy: coords[1]},  // some params
-        success: function (response) {     // callback
-            if (response.result === 'OK') {
-                if (response.data && typeof (response.data) === 'object') {
-                    // do something with the successful response.data
-                    // e.g. response.data can be a JSON object
-                }
-            } else {
-                // handle an unsuccessful response
-            }
-        }
-    });
-    placemark.events.add('contextmenu', function (e) {
-        var ip;
-        $.getJSON("https://api.ipify.org/?format=json", function (e) {
-            window.ip = e.ip;
         });
-        // Если меню метки уже отображено, то убираем его.
-        if ($('#menu').css('display') == 'block') {
-            $('#menu').remove();
+        myMap.geoObjects.add(placemark);
+    } else {
+        let cur_time = new Date();
+        let d = new Date($.session.get("time"))
+        let times_dif = cur_time - d;
+        if (times_dif < 300000) {
+            alert("Подожди 5 минуточек)")
         } else {
-            // HTML-содержимое контекстного меню.
-            var menuContent =
-                '<div id="menu">\
-                    <ul id="menu_list">\
-                         <li>Пожаловаться: <button id="hate">!</button> </li>\
-                         <li>Оценить: <button id="like">Like</button></li>\
-                        \<li>Удалить: <button id="del">Del</button></li>\
-                    </ul>\
-                </div>';
-
-            // Размещаем контекстное меню на странице
-            $('body').append(menuContent);
-
-            // Задаем позицию меню.
-            $('#menu').css({
-                left: e.get('pagePixels')[0],
-                top: e.get('pagePixels')[1]
-            });
-            $('#hate').button().click(function () {
-                alert('hate');
-                $('#menu').remove();
-                $.ajax({
-                    type: 'POST',
-                    url: '/main/hate/',
-                    headers: {
-                        "X-CSRFToken": csrftoken
-                    },// some data url
-                    data: {coordx: coords[0], coordy: coords[1]},  // some params
-                    success: function (response) {     // callback
-                        if (response.result === 'OK') {
-                            if (response.data && typeof (response.data) === 'object') {
-                                // do something with the successful response.data
-                                // e.g. response.data can be a JSON object
-                            }
-                        } else {
-                            // handle an unsuccessful response
+            var placemark = new ymaps.Placemark([coords[0], coords[1]],
+                {iconContent: 'DPS'},
+                {
+                    iconLayout: 'default#image',
+                    // iconImageClipRect: [[0,0], [26, 47]],
+                    iconImageHref: 'static/img/metka.svg',
+                    iconImageSize: [30, 30],
+                    iconImageOffset: [-15, -27],
+                },);
+            $.ajax({
+                type: 'POST',
+                url: '/main/create/',
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },// some data url
+                data: {coordx: coords[0], coordy: coords[1]},  // some params
+                success: function (response) {     // callback
+                    if (response.result === 'OK') {
+                        if (response.data && typeof (response.data) === 'object') {
+                            // do something with the successful response.data
+                            // e.g. response.data can be a JSON object
                         }
+                    } else {
+                        // handle an unsuccessful response
                     }
+                }
+            });
+            placemark.events.add('contextmenu', function (e) {
+                let ip;
+                $.getJSON("https://api.ipify.org/?format=json", function (e) {
+                    window.ip = e.ip;
                 });
-            })
-            $('#like').button().click(function () {
-                alert('like');
-                $('#menu').remove();
-            })
-            $('#del').button().click(function () {
-                alert('del');
-                $('#menu').remove();
-            })
+                // Если меню метки уже отображено, то убираем его.
+                if ($('#menu').css('display') == 'block') {
+                    $('#menu').remove();
+                } else {
+                    // HTML-содержимое контекстного меню.
+                    var menuContent =
+                        '<div id="menu">\
+                            <ul id="menu_list">\
+                                 <li>Пожаловаться: <button id="hate">!</button> </li>\
+                                 <li>Оценить: <button id="like">Like</button></li>\
+                                \<li>Удалить: <button id="del">Del</button></li>\
+                            </ul>\
+                        </div>';
 
+                    // Размещаем контекстное меню на странице
+                    $('body').append(menuContent);
+
+                    // Задаем позицию меню.
+                    $('#menu').css({
+                        left: e.get('pagePixels')[0],
+                        top: e.get('pagePixels')[1]
+                    });
+                    $('#hate').button().click(function () {
+                        alert('hate');
+                        $('#menu').remove();
+                        $.ajax({
+                            type: 'POST',
+                            url: '/main/hate/',
+                            headers: {
+                                "X-CSRFToken": csrftoken
+                            },// some data url
+                            data: {coordx: coords[0], coordy: coords[1]},  // some params
+                            success: function (response) {     // callback
+                                if (response.result === 'OK') {
+                                    if (response.data && typeof (response.data) === 'object') {
+                                        // do something with the successful response.data
+                                        // e.g. response.data can be a JSON object
+                                    }
+                                } else {
+                                    // handle an unsuccessful response
+                                }
+                            }
+                        });
+                    })
+                    $('#like').button().click(function () {
+                        alert('like');
+                        $('#menu').remove();
+                    })
+                    $('#del').button().click(function () {
+                        alert('del');
+                        $('#menu').remove();
+                    })
+
+                }
+            });
+            myMap.geoObjects.add(placemark);
         }
-    });
-    myMap.geoObjects.add(placemark);
+    }
+
     // alert(coords)
 }
 
@@ -215,14 +320,12 @@ function init() {
         myMap.events.add('click', function (e) {
             var coords =
                 e.get('coords');
-            alert(coords.join(', '));
             place(coords)
         });
     let marks = appConfig.marklist;
     let coord = appConfig.coords;
     if (marks) {
         for (let i = 0; i < marks.length; i++) {
-            console.log(typeof coords);
             let cordx = coord[i][0];
             let cordy = coord[i][1];
 
@@ -247,4 +350,14 @@ $("#spb").button().click(function () {
     myMap.setCenter([59.939095, 30.315868]);
     $(".link-active").toggleClass("link-active", " ");
     $("#spb_B").addClass("link-active");
+});
+$("#tmn").button().click(function () {
+    myMap.setCenter([57.1522, 65.5272]);
+    $(".link-active").toggleClass("link-active", " ");
+    $("#tmn_B").addClass("link-active");
+});
+$("#chel").button().click(function () {
+    myMap.setCenter([55.154, 61.4291]);
+    $(".link-active").toggleClass("link-active", " ");
+    $("#chel_B").addClass("link-active");
 });

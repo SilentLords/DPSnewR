@@ -27,7 +27,6 @@ def main(request):
             # print(dif.total_seconds() // 3600)
             if dif.total_seconds() // 3600 >= 3:
                 markcoord.objects.filter(id=mark.id).delete()
-
             else:
                 list_of_marks_cord.append([mark.xcord, mark.ycord])
                 list_of_marks.append([mark.id, mark.hate_point, mark.like_point])
@@ -38,6 +37,6 @@ def main(request):
 def hate(request):
     ids = request.POST.get("hate_Id")
     hate_mark = markcoord.objects.get(id=ids)
-    hate_mark.hate_point += 1;
+    hate_mark.hate_point += 1
     hate_mark.save()
     return HttpResponseRedirect(reverse('map'))
