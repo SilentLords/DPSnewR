@@ -25,7 +25,7 @@ def main(request):
             time = mark.timecreate.replace(tzinfo=None)
             dif = datetime.datetime.utcnow() - time
             # print(dif.total_seconds() // 3600)
-            if dif.total_seconds() // 3600 >= 3:
+            if dif.total_seconds() // 3600 >= 1.5:
                 markcoord.objects.filter(id=mark.id).delete()
             else:
                 list_of_marks_cord.append([mark.xcord, mark.ycord])
