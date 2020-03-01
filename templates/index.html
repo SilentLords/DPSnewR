@@ -18,6 +18,29 @@
 </head>
 
 <body>
+<div class="popup-fade">
+    <div class="popup">
+        <a class="popup-close" href="#">Закрыть</a>
+        <p>Если вы увидели патруль в вашем городе, вы можете поставить метку на карте, чтобы другие пользователи тоже
+            видели их местоположение</p>
+    </div>
+</div>
+<div class="popup-fade2">
+    <div class="popup2">
+        <p>Вы уверены, что хотите поставить метку здесь?</p>
+        <div class="pop_active">
+            <a class="popup-close2" href="#">Закрыть</a>
+            <a class="pop_but1" href="#">Уверен</a>
+        </div>
+
+    </div>
+</div>
+<div class="screen">
+    <div class="banner-box">
+        <div class="banner">Метки на карте обозночают местоположение экипажей ДПС online</div>
+        <button id="i" class="ibut">i</button>
+    </div>
+</div>
 <div class="all">
     <div id="map" class="map">
     </div>
@@ -33,6 +56,7 @@
         </div>
     </div>
 </div>
+
 <script src="{% static "js/vendor/jquery-3.4.1.min.js" %}"></script>
 
 
@@ -43,7 +67,7 @@
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
 <script src="{% static 'js/plugins.js' %}"></script>
 <script src="{% static 'js/main.js' %}"></script>
-<script src = "{% static "js/jquery.session.js" %}"></script>
+<script src="{% static "js/jquery.session.js" %}"></script>
 <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
 <script>
     window.ga = function () {
@@ -54,7 +78,8 @@
     ga('create', 'UA-XXXXX-Y', 'auto');
     ga('set', 'transport', 'beacon');
     ga('send', 'pageview')
-    window.appConfig = {marklist: {{ marklist }}, coords: {{cord_List}}}
+    window.appConfig = {marklist: {{ marklist }}, coords: {{cord_List}}};
+    window.times = {{ time }};
 
 </script>
 <script src="https://www.google-analytics.com/analytics.js" async></script>

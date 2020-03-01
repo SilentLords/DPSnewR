@@ -31,7 +31,7 @@ def main(request):
                 list_of_marks_cord.append([mark.xcord, mark.ycord])
                 list_of_marks.append([mark.id, mark.hate_point, mark.like_point])
 
-    return render(request, 'index.html', {'marklist': list_of_marks, 'cord_List': list_of_marks_cord})
+    return render(request, 'index.html', {'marklist': list_of_marks, 'cord_List': list_of_marks_cord, "time": 300000})
 
 
 def hate(request):
